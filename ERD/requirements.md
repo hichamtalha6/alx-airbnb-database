@@ -64,4 +64,5 @@
 
 ## ER Diagram
 
-![ER Diagram]([er_diagram.png])
+<img width="657" height="556" alt="er_diagram" src="https://github.com/user-attachments/assets/155e0627-2e23-4e5c-9d43-b08b3da79192" />
+
