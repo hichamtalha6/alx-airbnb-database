@@ -9,7 +9,8 @@ GROUP BY u.user_id, u.name
 ORDER BY total_bookings DESC;
 
 
--- 2. Window function: Rank properties based on the total number of bookings
+-- 2. Window function with RANK():
+-- Rank properties based on the total number of bookings they have received
 SELECT 
     p.property_id,
     p.title AS property_title,
@@ -19,3 +20,16 @@ FROM properties p
 LEFT JOIN bookings b ON p.property_id = b.property_id
 GROUP BY p.property_id, p.title
 ORDER BY booking_rank, p.property_id;
+
+
+-- 3. Alternative with ROW_NUMBER():
+-- Assign a unique rank (no ties) to properties based on total bookings
+SELECT 
+    p.property_id,
+    p.title AS property_title,
+    COUNT(b.booking_id) AS total_bookings,
+    ROW_NUMBER() OVER (ORDER BY COUNT(b.booking_id) DESC) AS booking_row_number
+FROM properties p
+LEFT JOIN bookings b ON p.property_id = b.property_id
+GROUP BY p.property_id, p.title
+ORDER BY booking_row_number, p.property_id;
