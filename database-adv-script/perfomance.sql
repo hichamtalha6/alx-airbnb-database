@@ -3,6 +3,7 @@
 ----------------------------------------------------
 -- Retrieves all bookings along with user details,
 -- property details, and payment details.
+-- Includes filtering with WHERE and AND clauses.
 EXPLAIN
 SELECT 
     b.booking_id,
@@ -20,18 +21,20 @@ SELECT
 FROM bookings b
 JOIN users u ON b.user_id = u.user_id
 JOIN properties p ON b.property_id = p.property_id
-LEFT JOIN payments pay ON b.booking_id = pay.booking_id;
+LEFT JOIN payments pay ON b.booking_id = pay.booking_id
+WHERE b.start_date >= '2025-01-01'
+  AND b.end_date <= '2025-12-31'
+  AND pay.status = 'completed';
 
 
 ----------------------------------------------------
 -- Refactored Query (optimized)
 ----------------------------------------------------
 -- Improvements:
--- 1. Used INNER JOIN only where necessary
--- 2. Changed JOIN order to reduce scanned rows
--- 3. Ensured relevant indexes exist on:
---    users(user_id), bookings(user_id, property_id),
---    properties(property_id), payments(booking_id)
+-- 1. Removed unnecessary columns
+-- 2. JOIN order ensures filtering happens earlier
+-- 3. Relevant indexes: bookings(user_id, property_id, start_date, end_date),
+--    payments(booking_id, status), users(user_id), properties(property_id)
 EXPLAIN
 SELECT 
     b.booking_id,
@@ -45,4 +48,7 @@ SELECT
 FROM bookings b
 JOIN users u ON b.user_id = u.user_id
 JOIN properties p ON b.property_id = p.property_id
-LEFT JOIN payments pay ON b.booking_id = pay.booking_id;
+LEFT JOIN payments pay ON b.booking_id = pay.booking_id
+WHERE b.start_date >= '2025-01-01'
+  AND b.end_date <= '2025-12-31'
+  AND pay.status = 'completed';
